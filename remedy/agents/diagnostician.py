@@ -47,6 +47,26 @@ def _make_tools(repo_root: str) -> list[ToolSpec]:
     ]
 
 
+CLARIFY_SYSTEM_PROMPT = """You are the diagnostician, answering a targeted \
+follow-up question from the resolver who is currently fixing the bug. \
+Use search_code and read_file to answer precisely. Keep it short and \
+specific -- just answer the question, no json needed.
+"""
+
+
+def clarify(client: anthropic.Anthropic, model: str, repo_root: str, diagnosis: dict, question: str) -> str:
+    """Resolver hit ambiguity mid-fix and asked a specific question.
+    Cheaper than a full re-diagnosis -- reuses the same read-only tools,
+    just answers one thing instead of localizing from scratch."""
+    tools = _make_tools(repo_root)
+    user_message = (
+        f"Original diagnosis: {diagnosis.get('diagnosis')}\n"
+        f"Relevant files: {diagnosis.get('relevant_files')}\n\n"
+        f"Resolver's question: {question}"
+    )
+    return run_agent(client, model, CLARIFY_SYSTEM_PROMPT, user_message, tools, max_turns=4)
+
+
 def diagnose(client: anthropic.Anthropic, model: str, repo_root: str, issue: str) -> dict:
     """Runs once. Returns {"relevant_files": [...], "diagnosis": "..."}."""
     tools = _make_tools(repo_root)
