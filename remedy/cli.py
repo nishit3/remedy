@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from pathlib import Path
 
 import anthropic
@@ -125,6 +126,8 @@ def run(
 
 
 def main():
+    if "--help" not in sys.argv[1:] and "-h" not in sys.argv[1:]:
+        get_api_key()  # prompt/validate/save before Typer checks any other args
     app()
 
 
