@@ -1,0 +1,18 @@
+Order totals are occasionally off by a cent or two when a discount is
+applied to an order with multiple line items.
+
+Examples:
+- 3 gizmos + 1 widget with a 33% discount should total $14.46, but the
+  system calculates $14.45.
+- 4 gizmos + 4 gadgets with a 37% discount should total $49.76, but the
+  system calculates $49.74.
+
+Single-item orders, and orders with no discount, calculate correctly --
+this only shows up once there are multiple line items AND a discount
+percentage involved together.
+
+I haven't been able to pin down which part of the pricing pipeline is
+responsible. An order total goes through a catalog lookup, per-line
+pricing, discount application, and tax on top of that -- somewhere in
+that chain the rounding is happening at the wrong point relative to the
+discount.
