@@ -13,7 +13,7 @@ from remedy.engine import solve
 
 app = typer.Typer(add_completion=False)
 
-DEFAULT_MODEL = "claude-sonnet-4-5"  # swap for whatever your account has access to
+DEFAULT_MODEL = "claude-sonnet-5"
 
 
 def _validate_key(key: str) -> None:
@@ -77,11 +77,11 @@ def run(
     resolver_model: str = typer.Option(DEFAULT_MODEL),
     verifier_model: str = typer.Option(DEFAULT_MODEL),
     max_iterations: int = typer.Option(5),
-    max_verifier_rounds: int = typer.Option(2),
     output: Path = typer.Option(Path("remedy_result.json"), help="Where to write the full result"),
 ):
-    """Resolve an issue in REPO: diagnostician locates it, resolver fixes
-    it, verifier gates quality, tester scores it against test_cmd."""
+    """Resolve an issue in REPO: diagnostician locates it, resolver fixes it
+    and loops with the tester until tests pass, then the verifier reviews
+    quality once on the working fix."""
     if not issue and not issue_file:
         typer.echo("provide --issue or --issue-file", err=True)
         raise typer.Exit(1)
@@ -100,7 +100,6 @@ def run(
             resolver_model=resolver_model,
             verifier_model=verifier_model,
             max_iterations=max_iterations,
-            max_verifier_rounds=max_verifier_rounds,
         )
     except anthropic.APIError as e:
         typer.echo(_explain_error(e), err=True)
@@ -113,6 +112,7 @@ def run(
                 "iterations_used": result.iterations_used,
                 "patch": result.patch,
                 "diagnosis": result.diagnosis,
+                "review": result.review,
                 "last_test_output": result.last_test_output,
                 "trajectory": result.trajectory,
             },

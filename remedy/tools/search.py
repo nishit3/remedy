@@ -23,6 +23,8 @@ def search_code(query: str, root: str | Path, max_results: int = 50) -> SearchRe
             ["rg", "--line-number", "--no-heading", query, str(root)],
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=30,
         )
     except subprocess.TimeoutExpired:

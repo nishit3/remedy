@@ -1,7 +1,33 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
 .venv/
 venv/
-*.egg-info/
+env/
+
+# Testing / tooling caches
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Secrets & local config
 .env
+# Remedy stores the API key here after first run
+.remedy/
+
+# Run outputs
+remedy_result.json
+predictions/
+results/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

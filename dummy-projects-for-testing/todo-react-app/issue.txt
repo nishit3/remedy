@@ -1,0 +1,10 @@
+Todo filters show the wrong items.
+
+When I click "Active", the list shows todos that are already marked
+done instead of the ones still pending. Clicking "Completed" does the
+opposite -- it shows the pending todos instead of the completed ones.
+
+The "All" view looks fine, this only happens when filtering by Active
+or Completed.
+
+This is in the TodoList component in src/TodoList.jsx.

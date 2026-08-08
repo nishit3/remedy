@@ -10,7 +10,7 @@ from dataclasses import asdict
 
 from mcp.server.fastmcp import FastMCP
 
-from remedy.tools.file_ops import read_file as _read_file
+from remedy.tools.file_ops import read_file as _read_file, list_directory as _list_directory
 from remedy.tools.search import search_code as _search_code
 from remedy.tools.edit import apply_edit as _apply_edit
 from remedy.tools.testing import run_tests as _run_tests
@@ -22,6 +22,12 @@ mcp = FastMCP("remedy-tools")
 def read_file(path: str, start_line: int | None = None, end_line: int | None = None) -> dict:
     """Read a file, optionally a 1-indexed inclusive line range. Returns numbered lines."""
     return asdict(_read_file(path, start_line, end_line))
+
+
+@mcp.tool()
+def list_directory(path: str) -> dict:
+    """List files/subdirs in a directory (non-recursive), dirs suffixed with '/'."""
+    return asdict(_list_directory(path))
 
 
 @mcp.tool()

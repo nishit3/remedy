@@ -18,6 +18,10 @@ def apply_edit(path: str | Path, search: str, replace: str) -> EditResult:
         content = path.read_text(encoding="utf-8")
     except FileNotFoundError:
         return EditResult(False, f"not found: {path}")
+    except UnicodeDecodeError:
+        # refuse rather than read with errors="replace" and write back --
+        # that would silently corrupt the offending byte on disk
+        return EditResult(False, f"cannot edit: {path} is not valid UTF-8")
     except OSError as e:
         return EditResult(False, f"read failed: {e}")
 
